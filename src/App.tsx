@@ -1,25 +1,64 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Register from './pages/Register';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import PrivateRoute from './components/PrivateRoute';
+import Incidents from './pages/Incidents';
+import Interventions from './pages/Interventions';
+import Home from './pages/Home';
+import Navbar from './components/Navbar';
+import ChatBot from './pages/ChatBot';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Navbar />
+      <Routes>
+        {/* ✅ Page d’accueil accessible à tous */}
+        <Route path="/" element={<Home />} />
+
+        {/* ✅ Pages publiques */}
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+
+        {/* ✅ Routes protégées */}
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/chatbot" element={<ChatBot />} />
+                <Route
+          path="/chatbot"
+          element={
+            <PrivateRoute>
+              <ChatBot />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/incidents"
+          element={
+            <PrivateRoute>
+              <Incidents />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/interventions"
+          element={
+            <PrivateRoute>
+              <Interventions />
+            </PrivateRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
