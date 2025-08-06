@@ -1,0 +1,10 @@
+/* src/pages/Interventions.css */
+
+.progress {
+  height: 20px;
+}
+
+.badge {
+  font-size: 0.9em;
+  padding: 6px 10px;
+}

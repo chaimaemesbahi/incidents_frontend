@@ -4,8 +4,8 @@ const API = 'http://localhost:5000/api/interventions';
 
 const getToken = () => localStorage.getItem('token');
 
-export const fetchInterventions = () => {
-  return axios.get(API, {
+export const fetchAllInterventions = () => {
+  return axios.get(`${API}/admin`, {
     headers: {
       Authorization: `Bearer ${getToken()}`
     }
@@ -13,11 +13,11 @@ export const fetchInterventions = () => {
 };
 
 export const updateInterventionStatut = (id: number, statut: string) => {
-  return axios.put(`http://localhost:5000/api/interventions/${id}/statut`, 
+  return axios.put(`${API}/${id}/statut`,
     { statut },
     {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
+        Authorization: `Bearer ${getToken()}`
       }
     });
 };

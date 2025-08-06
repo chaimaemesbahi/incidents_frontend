@@ -1,43 +1,63 @@
-import { useState, useEffect } from 'react';
-import { createIncident, fetchIncidents } from '../api/incidents';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
+interface Incident {
+  id: number;
+  description: string;
+  date_creation: string;
+}
 
 export default function Incidents() {
   const [description, setDescription] = useState('');
-  const [incidents, setIncidents] = useState([]);
+  const [incidents, setIncidents] = useState<Incident[]>([]);
+
+  const fetchIncidents = async () => {
+    try {
+      const res = await axios.get('http://localhost:5000/api/incidents', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+      setIncidents(res.data);
+    } catch (err) {
+      console.error('Erreur chargement incidents', err);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await createIncident(description);
-    setDescription('');
-    loadIncidents();
-  };
-
-  const loadIncidents = async () => {
-    const res = await fetchIncidents();
-    setIncidents(res.data);
+    try {
+      await axios.post('http://localhost:5000/api/incidents', { description }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+      setDescription('');
+      fetchIncidents();
+    } catch (err) {
+      console.error('Erreur création incident', err);
+    }
   };
 
   useEffect(() => {
-    loadIncidents();
+    fetchIncidents();
   }, []);
 
   return (
-    <div>
-      <h2>Créer un Incident</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="container mt-5">
+      <h3>Créer un incident</h3>
+      <form onSubmit={handleSubmit} className="mb-4">
         <input
-          placeholder="Décris ton problème"
+          type="text"
+          className="form-control mb-2"
+          placeholder="Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-        <button type="submit">Créer</button>
+        <button className="btn btn-success">Créer</button>
       </form>
 
-      <h3>Mes incidents</h3>
-      <ul>
-        {incidents.map((incident: any) => (
-          <li key={incident.id}>
-            {incident.description} — {new Date(incident.date_creation).toLocaleString()}
+      <h4>📋 Incidents récents</h4>
+      <ul className="list-group">
+        {incidents.map((i) => (
+          <li className="list-group-item" key={i.id}>
+            {i.description} — <small>{new Date(i.date_creation).toLocaleString('fr-FR')}</small>
           </li>
         ))}
       </ul>
